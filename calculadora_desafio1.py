@@ -7,7 +7,35 @@ def calculadora(consumo: list, tarifa: float, classe: str) -> tuple:
     desconto_aplicado = 0
     cobertura = 0
 
-    # Desenvolva seu código aqui #
+    consumo_medio = sum(consumo) / len(consumo)
+
+    if consumo_medio < 10000:
+        descontos = {
+            "Residencial": 0.18,
+            "Comercial": 0.16,
+            "Industrial": 0.12
+        }
+        cobertura = 0.90
+    elif 10000 <= consumo_medio <= 20000:
+        descontos = {
+            "Residencial": 0.22,
+            "Comercial": 0.18,
+            "Industrial": 0.15
+        }
+        cobertura= 0.95
+    else:  
+        descontos = {
+            "Residencial": 0.25,
+            "Comercial": 0.22,
+            "Industrial": 0.18
+        }
+        cobertura = 0.99
+
+    desconto_aplicado = descontos[classe]
+
+    custo_mensal = consumo_medio * tarifa * cobertura
+    economia_mensal = custo_mensal * desconto_aplicado
+    economia_anual = economia_mensal * 12
 
     return (
         round(economia_anual, 2),

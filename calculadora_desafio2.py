@@ -1,13 +1,93 @@
+from bs4 import BeautifulSoup
+import requests
+
 def calculadora(consumo: list, classe: str, bandeira: str) -> tuple:
     """
-    retorna uma tupla de floats contendo economia anual, economia mensal, desconto aplicado e cobertura.
+    Retorna uma tupla de floats contendo economia anual, economia mensal,
+    desconto aplicado e cobertura.
     """
     economia_anual = 0
     economia_mensal = 0
     desconto_aplicado = 0
     cobertura = 0
 
-    # Desenvolva seu código aqui #
+    if classe in ["Comercial", "Industrial"]:
+        classe_original = classe  
+        classe = "Industrial/Comercial"
+    else:
+        classe_original = classe
+
+    url = 'https://www.cemig.com.br/atendimento/valores-de-tarifas-e-servicos/'
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    tarifas = {}
+
+    sections = soup.find_all('section')
+
+    tabela = None
+
+    for section in sections:
+        if classe == "Residencial" and "B1- RESIDENCIAL NORMAL" in section.text:
+            tabela = section.find('table', {'class': 'table-bordered'})
+            break
+        elif classe == "Industrial/Comercial" and "B3 - DEMAIS CLASSES" in section.text:
+            tabela = section.find('table', {'class': 'table-bordered'})
+            break
+
+
+    cabecalhos = [
+        th.text.strip().split(" -")[0] for th in tabela.find('thead').find_all('th')
+    ]
+
+    linhas = tabela.find('tbody').find_all('tr')
+
+    for linha in linhas:
+        colunas = linha.find_all('td')
+        classe_atual = colunas[0].text.strip()
+
+        if "Residencial" in classe_atual:
+            classe_atual = "Residencial"
+        elif "Demais classes" in classe_atual:
+            classe_atual = "Industrial/Comercial"
+
+        tarifas_bandeiras = {}
+        for i in range(1, len(colunas)):
+            bandeira_atual = cabecalhos[i]
+            valor = colunas[i].text.strip().replace(',', '.')
+            tarifas_bandeiras[bandeira_atual] = float(valor)
+
+        tarifas[classe_atual] = tarifas_bandeiras
+
+    consumo_medio = sum(consumo) / len(consumo)
+
+    if consumo_medio < 10000:
+        descontos = {
+            "Residencial": 0.18,
+            "Comercial": 0.16,
+            "Industrial": 0.12
+        }
+        cobertura = 0.90
+    elif 10000 <= consumo_medio <= 20000:
+        descontos = {
+            "Residencial": 0.22,
+            "Comercial": 0.18,
+            "Industrial": 0.15
+        }
+        cobertura = 0.95
+    else:
+        descontos = {
+            "Residencial": 0.25,
+            "Comercial": 0.22,
+            "Industrial": 0.18
+        }
+        cobertura = 0.99
+
+    desconto_aplicado = descontos[classe_original]
+    custo_mensal = consumo_medio * tarifas[classe][bandeira] * cobertura
+    economia_mensal = custo_mensal * desconto_aplicado
+    economia_anual = economia_mensal * 12
 
     return (
         round(economia_anual, 2),
