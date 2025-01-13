@@ -52,3 +52,34 @@ Portanto, desenvolva um código de web scraping que obtenha a tarifa diretamente
 5. Inclua neste mesmo README uma seção detalhada que explique claramente os passos necessários para executar o código. Certifique-se de que as instruções sejam precisas, organizadas e fáceis de entender, pois os avaliadores seguirão essa documentação;
 6. A entrega deve ser realizada dentro do prazo estabelecido;
 7. O candidato deve fazer um fork do repositório. A entrega pode ser realizada por meio de um pull request para o repositório original (o que será considerado um diferencial) ou enviando o link do seu repositório para o e-mail lucas@dg.energy.
+
+## Ambiente virtual
+
+É recomendável usar um ambiente virtual para gerenciar suas dependências. Siga os passos abaixo para configurar um ambiente virtual:
+
+1. Crie um ambiente virtual usando o seguinte comando:
+
+    ```bash
+    python -m venv .venv
+    ```
+
+2. Ative o ambiente virtual:
+   - No macOS e Linux:
+
+    ```bash
+    source .venv/bin/activate
+    ```
+   - No Windows:
+
+    ```bash
+    .venv\Scripts\activate
+    ```
+
+3. Após ativar o ambiente virtual, você pode instalar as dependências:
+   ```bash
+    pip install -r requirements.txt
+    ```
+4. Execute o programa (substitua X pelo número do desafio):
+    ```bash
+    python calculadora_desafioX.py
+    ```
