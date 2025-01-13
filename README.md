@@ -60,7 +60,7 @@ Portanto, desenvolva um código de web scraping que obtenha a tarifa diretamente
 1. Crie um ambiente virtual usando o seguinte comando:
 
     ```bash
-    python3 -m venv .venv
+    python -m venv .venv
     ```
 
 2. Ative o ambiente virtual:
